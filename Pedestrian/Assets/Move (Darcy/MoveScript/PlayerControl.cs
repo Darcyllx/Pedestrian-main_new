@@ -13,7 +13,7 @@ public class PlayerControl : MonoBehaviour
     private float inputVertical;
     public float distance;
     public LayerMask whatIsLadder;
-    private bool isClimbing;
+    //private bool isClimbing;
 
     // Start is called before the first frame update
     void Start()
@@ -38,18 +38,18 @@ public class PlayerControl : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                isClimbing = true;
+                isLaddered = true;
             }
         }
-        else 
+        else
         {
             if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
             {
-                isClimbing = false;
+                isLaddered = false;
             }
         }
 
-        if (isClimbing == true)
+        if (isLaddered == true)
         {
             inputVertical = Input.GetAxisRaw("Vertical");
             rb.velocity = new Vector2(rb.velocity.x, inputVertical * moveSpeed);
@@ -58,19 +58,39 @@ public class PlayerControl : MonoBehaviour
         else
         {
             rb.gravityScale = 5;
+            //Debug.Log("gravity5");
         }
 
-        
+
     }
-    
+
 
     void Jump()
     {
         if (Input.GetButtonDown("Jump") && isGrounded == true)
         {
-            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 20f), ForceMode2D.Impulse);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 18f), ForceMode2D.Impulse);
         }
     }
 
-    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder"))
+        {
+            //Player.GetComponent<PlayerControl>().isLaddered = true;
+            isLaddered = true;
+        }
+
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder"))
+        {
+            //Player.GetComponent<PlayerControl>().isLaddered = false;
+            isLaddered = false;
+            Debug.Log("Isladdered turns false.");
+        }
+    }
+
 }
